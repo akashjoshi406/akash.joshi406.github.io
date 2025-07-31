@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delhi Bus Ticket Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #48c9b0; /* Exact background color from the image */
+        }
+        .qr-button {
+            background-color: #48d1cc; /* Exact QR button color from the image */
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <!-- Input Form -->
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md mb-8">
+        <h1 class="text-2xl text-gray-800 text-center mb-6">Create Your Bus Ticket</h1>
+        <div class="space-y-4">
+            <div>
+                <label for="bus-number" class="block text-sm font-medium text-gray-700">Bus Number</label>
+                <input type="text" id="bus-number" value="DL51GD2830" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+            </div>
+            <div>
+                <label for="bus-route" class="block text-sm font-medium text-gray-700">Bus Route</label>
+                <input type="text" id="bus-route" value="OMS(-)" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+            </div>
+            <div>
+                <label for="start-stop" class="block text-sm font-medium text-gray-700">Starting Stop</label>
+                <select id="start-stop" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                    <option>SagarPur Vashisht Park</option>
+                    <option>Janak Setu</option>
+                    <option>D Block Janak Puri</option>
+                    <option>Desu Colony Janak Puri</option>
+                    <option>Janak Cinema</option>
+                    <option>Raghu Nagar (Janak Puri)</option>
+                    <option>C-1 Janak Puri</option>
+                    <option>C-2 Janak Puri</option>
+                    <option selected>Uttam Nagar / A1 Janak Puri</option>
+                    <option>District Centre Janak Puri</option>
+                    <option>P S Sadar Bazar</option>
+                    <option>Lajwanti Garden</option>
+                    <option>Nangal raya lajwanti gardem</option>
+                </select>
+            </div>
+            <div>
+                <label for="end-stop" class="block text-sm font-medium text-gray-700">Ending Stop</label>
+                 <select id="end-stop" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm">
+                    <option>SagarPur Vashisht Park</option>
+                    <option>Janak Setu</option>
+                    <option>D Block Janak Puri</option>
+                    <option>Desu Colony Janak Puri</option>
+                    <option>Janak Cinema</option>
+                    <option>Raghu Nagar (Janak Puri)</option>
+                    <option>C-1 Janak Puri</option>
+                    <option>C-2 Janak Puri</option>
+                    <option>Uttam Nagar / A1 Janak Puri</option>
+                    <option>District Centre Janak Puri</option>
+                    <option selected>P S Sadar Bazar</option>
+                    <option>Lajwanti Garden</option>
+                    <option>Nangal raya lajwanti gardem</option>
+                </select>
+            </div>
+        </div>
+        <button id="generate-btn" class="mt-6 w-full bg-teal-600 text-white py-3 px-4 rounded-lg hover:bg-teal-700 transition-colors shadow-md">
+            Generate Ticket
+        </button>
+    </div>
+
+    <!-- Ticket Display Area -->
+    <div id="ticket-wrapper" class="hidden w-full max-w-md">
+        <div id="ticket-container" class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-md mx-auto">
+            <h2 class="text-xl text-center text-gray-800 mb-4">Transport Dept. of Delhi</h2>
+            
+            <div class="flex justify-between items-center text-lg">
+                <span id="vehicle-no" class="font-mono text-gray-900">DL51GD2830</span>
+                <span id="total-fare" class="text-gray-900">₹ 27.0</span>
+            </div>
+
+            <hr class="my-4 border-gray-300">
+
+            <div class="space-y-3 text-gray-700">
+                <div class="flex justify-between">
+                    <span>Bus Route</span>
+                    <span id="display-route" class="text-right text-gray-900">OMS(-)</span>
+                </div>
+                 <div class="flex justify-between">
+                    <span>Fare</span>
+                    <span id="display-fare" class="text-right text-gray-900">₹ 15.0</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Booking Time</span>
+                    <span id="display-time" class="text-right text-gray-900">2025-07-28 19:21:38</span>
+                </div>
+                 <div class="flex justify-between">
+                    <span>Tickets</span>
+                    <span id="display-tickets" class="text-right text-gray-900">2</span>
+                </div>
+                 <div class="flex flex-col mt-2">
+                    <span class="text-base">Starting stop</span>
+                    <span id="display-start" class="text-lg text-gray-900">Uttam Nagar / A1 Janak Puri</span>
+                </div>
+                 <div class="flex flex-col mt-2">
+                    <span class="text-base">Ending stop</span>
+                    <span id="display-end" class="text-lg text-gray-900">P S Sadar Bazar</span>
+                </div>
+            </div>
+
+            <div class="text-center mt-6">
+                <span id="ticket-id" class="font-mono text-gray-500 text-sm">T28072025eeee39981b</span>
+            </div>
+
+            <button id="show-qr-btn" class="mt-4 text-white p-4 rounded-lg flex items-center justify-center space-x-3 qr-button w-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zM13 13h3v3h-3v-3zm-1 5h3v3h-3v-3zm8-5h3v3h-3v-3zm-3 0h3v3h-3v-3zm-4 0h3v3h-3v-3zm-1-1h-3v-3h3v3zm-1 4h-3v-3h3v3zm4 1h3v3h-3v-3zm-4-3h3v3h-3v-3zm4-1h3v3h-3v-3zm3 3h3v3h-3v-3zm-8 4h3v3h-3v-3zm3-3h3v3h-3v-3z"/>
+                </svg>
+                <span class="text-lg font-bold">Show QR code</span>
+            </button>
+        </div>
+        <button id="download-btn" class="mt-6 w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-md">
+            Download as Image
+        </button>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div id="qr-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-xl shadow-2xl text-center">
+            <h3 class="text-xl font-bold mb-4">Scan QR Code</h3>
+            <div id="qrcode-container" class="flex justify-center"></div>
+            <button id="close-modal-btn" class="mt-6 bg-red-500 text-white py-2 px-6 rounded-lg hover:bg-red-600">Close</button>
+        </div>
+    </div>
+
+
+    <script>
+        // DOM element references
+        const generateBtn = document.getElementById('generate-btn');
+        const downloadBtn = document.getElementById('download-btn');
+        const ticketWrapper = document.getElementById('ticket-wrapper');
+        const ticketContainer = document.getElementById('ticket-container');
+        const showQrBtn = document.getElementById('show-qr-btn');
+        const qrModal = document.getElementById('qr-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const qrcodeContainer = document.getElementById('qrcode-container');
+
+        // Input fields
+        const busNumberInput = document.getElementById('bus-number');
+        const busRouteInput = document.getElementById('bus-route');
+        const startStopInput = document.getElementById('start-stop');
+        const endStopInput = document.getElementById('end-stop');
+
+        // Display fields
+        const vehicleNoDisp = document.getElementById('vehicle-no');
+        const routeDisp = document.getElementById('display-route');
+        const timeDisp = document.getElementById('display-time');
+        const startDisp = document.getElementById('display-start');
+        const endDisp = document.getElementById('display-end');
+        const ticketIdDisp = document.getElementById('ticket-id');
+
+        let currentTicketId = '';
+
+        // Generate Ticket Button Logic
+        generateBtn.addEventListener('click', () => {
+            // 1. Get current date and time
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+            // 2. Generate random ticket ID
+            currentTicketId = 'T' + day + month + year + 'eeee' + Math.floor(10000 + Math.random() * 90000) + 'b';
+
+            // 3. Update display elements with user input and generated data
+            vehicleNoDisp.textContent = busNumberInput.value;
+            routeDisp.textContent = busRouteInput.value;
+            timeDisp.textContent = formattedDateTime;
+            startDisp.textContent = startStopInput.value;
+            endDisp.textContent = endStopInput.value;
+            ticketIdDisp.textContent = currentTicketId;
+
+            // 4. Show the ticket
+            ticketWrapper.classList.remove('hidden');
+            
+            // Scroll to the ticket
+            ticketWrapper.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Download as Image Button Logic
+        downloadBtn.addEventListener('click', () => {
+            // Use html2canvas to capture the ticket container
+            html2canvas(ticketContainer, {
+                useCORS: true, // Important for external resources if any
+                scale: 2 // Increase scale for better resolution
+            }).then(canvas => {
+                // Create a link element to trigger the download
+                const link = document.createElement('a');
+                link.download = 'delhi-bus-ticket.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            }).catch(err => {
+                console.error('Oops, something went wrong!', err);
+                alert('Could not generate image. Please try again.');
+            });
+        });
+
+        // Show QR Code Modal Logic
+        showQrBtn.addEventListener('click', () => {
+            if (currentTicketId) {
+                // Clear previous QR code
+                qrcodeContainer.innerHTML = '';
+                // Generate new QR code
+                new QRCode(qrcodeContainer, {
+                    text: currentTicketId,
+                    width: 200,
+                    height: 200,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+                qrModal.classList.remove('hidden');
+            } else {
+                alert('Please generate a ticket first!');
+            }
+        });
+
+        // Close Modal Logic
+        closeModalBtn.addEventListener('click', () => {
+            qrModal.classList.add('hidden');
+        });
+        
+        // Also close modal if clicking on the background
+        qrModal.addEventListener('click', (e) => {
+            if (e.target === qrModal) {
+                 qrModal.classList.add('hidden');
+            }
+        });
+
+    </script>
+</body>
+</html>
